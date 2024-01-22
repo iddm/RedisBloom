@@ -43,7 +43,67 @@ jobs:
   #     - name: Run tests
   #       run: make test REDIS_SERVER=$GITHUB_WORKSPACE/redis/src/redis-server
 
-  test-old-ubuntu:
+  # test-old-ubuntu:
+  #   runs-on: ubuntu-latest
+  #   container: ${{ matrix.builder-container }}
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       # TODO: figure out the Redis version we need to test on.
+  #       redis-version: ['unstable']
+  #       builder-container: ['ubuntu:xenial', 'ubuntu:bionic']
+  #   defaults:
+  #     run:
+  #       shell: bash -l -eo pipefail {0}
+  #   steps:
+  #     - name: Install build dependencies
+  #       run: |
+  #         apt-get update && apt-get install -y software-properties-common
+  #         add-apt-repository ppa:git-core/ppa -y
+  #         apt-get update
+  #         apt-get install -y build-essential make autoconf automake libtool lcov git wget zlib1g-dev lsb-release libssl-dev openssl ca-certificates
+  #         wget https://cmake.org/files/v3.28/cmake-3.28.0.tar.gz
+  #         tar -xzvf cmake-3.28.0.tar.gz
+  #         cd cmake-3.28.0
+  #         ./configure
+  #         make -j `nproc`
+  #         make install
+  #         cd ..
+  #         ln -s /usr/local/bin/cmake /usr/bin/cmake
+  #         wget https://www.python.org/ftp/python/3.9.6/Python-3.9.6.tgz
+  #         tar -xvf Python-3.9.6.tgz
+  #         cd Python-3.9.6
+  #         ./configure
+  #         make -j `nproc`
+  #         make altinstall
+  #         cd ..
+  #         rm /usr/bin/python3 && ln -s `which python3.9` /usr/bin/python3
+  #         rm /usr/bin/lsb_release
+  #         python3 --version
+  #         make --version
+  #         cmake --version
+  #         python3 -m pip install --upgrade pip
+  #     - name: Checkout RedisBloom
+  #       uses: actions/checkout@v3
+  #       with:
+  #         submodules: true
+  #     - name: Install Python dependencies
+  #       run:
+  #         python3 -m pip install -r tests/flow/requirements.txt
+  #     - name: Checkout Redis
+  #       uses: actions/checkout@v3
+  #       with:
+  #         repository: 'redis/redis'
+  #         ref: 'unstable'
+  #         path: 'redis'
+  #     - name: Build Redis
+  #       run: cd redis && make -j `nproc`
+  #     - name: Build RedisBloom
+  #       run: make -j `nproc`
+  #     - name: Run tests
+  #       run: make test REDIS_SERVER=$GITHUB_WORKSPACE/redis/src/redis-server
+
+  debian:
     runs-on: ubuntu-latest
     container: ${{ matrix.builder-container }}
     strategy:
@@ -51,34 +111,34 @@ jobs:
       matrix:
         # TODO: figure out the Redis version we need to test on.
         redis-version: ['unstable']
-        builder-container: ['ubuntu:xenial', 'ubuntu:bionic']
+        builder-container: ['debian:bullseye']
     defaults:
       run:
         shell: bash -l -eo pipefail {0}
     steps:
       - name: Install build dependencies
         run: |
-          apt-get update && apt-get install -y software-properties-common
-          add-apt-repository ppa:git-core/ppa -y
+          # apt-get update && apt-get install -y software-properties-common
+          # add-apt-repository ppa:git-core/ppa -y
           apt-get update
-          apt-get install -y build-essential make autoconf automake libtool lcov git wget zlib1g-dev lsb-release libssl-dev openssl ca-certificates
-          wget https://cmake.org/files/v3.28/cmake-3.28.0.tar.gz
-          tar -xzvf cmake-3.28.0.tar.gz
-          cd cmake-3.28.0
-          ./configure
-          make -j `nproc`
-          make install
-          cd ..
-          ln -s /usr/local/bin/cmake /usr/bin/cmake
-          wget https://www.python.org/ftp/python/3.9.6/Python-3.9.6.tgz
-          tar -xvf Python-3.9.6.tgz
-          cd Python-3.9.6
-          ./configure
-          make -j `nproc`
-          make altinstall
-          cd ..
-          rm /usr/bin/python3 && ln -s `which python3.9` /usr/bin/python3
-          rm /usr/bin/lsb_release
+          apt-get install -y build-essential make cmake autoconf automake libtool lcov git wget zlib1g-dev lsb-release libssl-dev openssl ca-certificates python3 python3-pip
+          # wget https://cmake.org/files/v3.28/cmake-3.28.0.tar.gz
+          # tar -xzvf cmake-3.28.0.tar.gz
+          # cd cmake-3.28.0
+          # ./configure
+          # make -j `nproc`
+          # make install
+          # cd ..
+          # ln -s /usr/local/bin/cmake /usr/bin/cmake
+          # wget https://www.python.org/ftp/python/3.9.6/Python-3.9.6.tgz
+          # tar -xvf Python-3.9.6.tgz
+          # cd Python-3.9.6
+          # ./configure
+          # make -j `nproc`
+          # make altinstall
+          # cd ..
+          # rm /usr/bin/python3 && ln -s `which python3.9` /usr/bin/python3
+          # rm /usr/bin/lsb_release
           python3 --version
           make --version
           cmake --version
