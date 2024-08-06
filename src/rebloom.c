@@ -1360,6 +1360,24 @@ int RedisModule_OnLoad(RedisModuleCtx *ctx, RedisModuleString **argv, int argc) 
         BAIL("Invalid number of arguments passed");
     }
 
+    // MOD-7455 New configuration options:
+    //
+    // 1. Should be made not just load-time, but also runtime options,
+    // "data-path".
+    // 2. Should have validation for all the options.
+    // 3. Should introduce new options, such as:
+    //
+    // cf_initial_size
+    // cf_bucket_size
+    // cf_max_iterations
+    // cf_expansion_factor
+    // bf_expansion_factor
+    //
+    // 4. Rename initial_size to bf-initial-size, error_rate to
+    // bf-error-rate.
+    //
+    // Cover with tests at the unit and component levels when possible.
+    // The deprecation strategy: TBA.
     for (int ii = 0; ii < argc; ii += 2) {
         if (!rsStrcasecmp(argv[ii], "initial_size")) {
             long long v;
